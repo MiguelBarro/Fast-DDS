@@ -439,10 +439,15 @@ configure_file(${PROJECT_SOURCE_DIR}/include/${PROJECT_NAME}/config.h.in
 
 #Create library
 add_library(${PROJECT_NAME} ${${PROJECT_NAME}_source_files})
+
 set_target_properties(${PROJECT_NAME} PROPERTIES
     VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
     )
+
+if(Sanitizers_FOUND)
+    add_sanitize_thread(${PROJECT_NAME})
+endif()
 
 option(INTERNAL_DEBUG "Activate developer debug messages" OFF)
 
