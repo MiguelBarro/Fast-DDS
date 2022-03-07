@@ -153,6 +153,12 @@ public:
                 const TopicAttributes& topicAtt,
                 const ReaderQos& rqos));
 
+    MOCK_METHOD4(registerReader, bool(
+                RTPSReader * Reader,
+                const TopicAttributes& topicAtt,
+                const ReaderQos& rqos,
+                const ContentFilterProperty* content_filter));
+
     MOCK_METHOD3(updateReader, bool(
                 RTPSReader * Reader,
                 const TopicAttributes& topicAtt,
