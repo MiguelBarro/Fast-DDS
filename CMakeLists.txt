@@ -400,6 +400,11 @@ add_subdirectory(thirdparty/optionparser)
 ###############################################################################
 # Testing options
 ###############################################################################
+# When using thread sanitizer use per-test log file
+
+cmake_dependent_option(TSAN_PERFILE_LOG "Use specific log files for each test TSan output" ON "Sanitizers_FOUND" OFF)
+include (./cmake/common/testproxy.cmake)
+
 enable_testing()
 include(CTest)
 add_subdirectory(test)

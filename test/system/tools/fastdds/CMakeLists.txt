@@ -29,7 +29,7 @@ if(PYTHONINTERP_FOUND)
     )
 
     foreach(TEST IN LISTS TESTS)
-        add_test(
+        proxy_add_test(
                 NAME system.tools.fastdds.${TEST}
                 COMMAND ${PYTHON_EXECUTABLE}
                 ${CMAKE_CURRENT_SOURCE_DIR}/tests.py

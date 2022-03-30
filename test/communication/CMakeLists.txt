@@ -197,7 +197,7 @@ if(SECURITY)
 endif()
 
 if(PYTHONINTERP_FOUND)
-    add_test(NAME SimpleCommunicationBestEffort
+    proxy_add_test(NAME SimpleCommunicationBestEffort
         COMMAND ${CMAKE_COMMAND} -DACTUAL_TEST="${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/simple_communication.py" -P ${PROJECT_SOURCE_DIR}/cmake/common/test_wrapper.cmake)
 
     # Set test with label NoMemoryCheck
@@ -215,7 +215,7 @@ if(PYTHONINTERP_FOUND)
             "PATH=$<TARGET_FILE_DIR:${PROJECT_NAME}>\\;$<TARGET_FILE_DIR:fastcdr>\\;${WIN_PATH}")
     endif()
 
-    add_test(NAME SimpleCommunicationReliable
+    proxy_add_test(NAME SimpleCommunicationReliable
         COMMAND ${CMAKE_COMMAND} -DACTUAL_TEST="${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/simple_communication.py" -P ${PROJECT_SOURCE_DIR}/cmake/common/test_wrapper.cmake)
 
     # Set test with label NoMemoryCheck
@@ -233,7 +233,7 @@ if(PYTHONINTERP_FOUND)
             "PATH=$<TARGET_FILE_DIR:${PROJECT_NAME}>\\;$<TARGET_FILE_DIR:fastcdr>\\;${WIN_PATH}")
     endif()
 
-    add_test(NAME SimpleCommunicationReliableBestEffort
+    proxy_add_test(NAME SimpleCommunicationReliableBestEffort
         COMMAND ${CMAKE_COMMAND} -DACTUAL_TEST="${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/simple_communication.py" -P ${PROJECT_SOURCE_DIR}/cmake/common/test_wrapper.cmake)
 
     # Set test with label NoMemoryCheck
@@ -251,7 +251,7 @@ if(PYTHONINTERP_FOUND)
             "PATH=$<TARGET_FILE_DIR:${PROJECT_NAME}>\\;$<TARGET_FILE_DIR:fastcdr>\\;${WIN_PATH}")
     endif()
 
-    add_test(NAME SimpleMixCommunicationBestEffort
+    proxy_add_test(NAME SimpleMixCommunicationBestEffort
         COMMAND ${CMAKE_COMMAND} -DACTUAL_TEST="${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/simple_mix_communication.py" -P ${PROJECT_SOURCE_DIR}/cmake/common/test_wrapper.cmake)
 
     # Set test with label NoMemoryCheck
@@ -269,7 +269,7 @@ if(PYTHONINTERP_FOUND)
             "PATH=$<TARGET_FILE_DIR:${PROJECT_NAME}>\\;$<TARGET_FILE_DIR:fastcdr>\\;${WIN_PATH}")
     endif()
 
-    add_test(NAME SimpleMixCommunicationReliable
+    proxy_add_test(NAME SimpleMixCommunicationReliable
         COMMAND ${CMAKE_COMMAND} -DACTUAL_TEST="${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/simple_mix_communication.py" -P ${PROJECT_SOURCE_DIR}/cmake/common/test_wrapper.cmake)
 
     # Set test with label NoMemoryCheck
@@ -288,7 +288,7 @@ if(PYTHONINTERP_FOUND)
     endif()
 
     if(SECURITY)
-        add_test(NAME SimpleCommunicationSecureBestEffort
+        proxy_add_test(NAME SimpleCommunicationSecureBestEffort
             COMMAND ${CMAKE_COMMAND} -DACTUAL_TEST="${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/simple_communication.py" -P ${PROJECT_SOURCE_DIR}/cmake/common/test_wrapper.cmake)
 
         # Set test with label NoMemoryCheck
@@ -310,7 +310,7 @@ if(PYTHONINTERP_FOUND)
                 "PATH=$<TARGET_FILE_DIR:${PROJECT_NAME}>\\;$<TARGET_FILE_DIR:fastcdr>\\;${WIN_PATH}")
         endif()
 
-        add_test(NAME SimpleCommunicationSecureMsgCryptoBestEffort
+        proxy_add_test(NAME SimpleCommunicationSecureMsgCryptoBestEffort
             COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/multiple_subs_secure_crypto_communication.py
             --pub $<TARGET_FILE:SimpleCommunicationPublisher>
             --xml-pub secure_msg_crypto_besteffort_pub_profile.xml
@@ -327,7 +327,7 @@ if(PYTHONINTERP_FOUND)
                 "PATH=$<TARGET_FILE_DIR:${PROJECT_NAME}>\\;$<TARGET_FILE_DIR:fastcdr>\\;${WIN_PATH}")
         endif()
 
-        add_test(NAME SimpleCommunicationSecureMsgSubmsgCryptoBestEffort
+        proxy_add_test(NAME SimpleCommunicationSecureMsgSubmsgCryptoBestEffort
             COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/multiple_subs_secure_crypto_communication.py
             --pub $<TARGET_FILE:SimpleCommunicationPublisher>
             --xml-pub secure_msg_submsg_crypto_besteffort_pub_profile.xml
@@ -344,7 +344,7 @@ if(PYTHONINTERP_FOUND)
                 "PATH=$<TARGET_FILE_DIR:${PROJECT_NAME}>\\;$<TARGET_FILE_DIR:fastcdr>\\;${WIN_PATH}")
         endif()
 
-        add_test(NAME SimpleCommunicationSecureSubmsgCryptoBestEffort
+        proxy_add_test(NAME SimpleCommunicationSecureSubmsgCryptoBestEffort
             COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/multiple_subs_secure_crypto_communication.py
             --pub $<TARGET_FILE:SimpleCommunicationPublisher>
             --xml-pub secure_submsg_crypto_besteffort_pub_profile.xml
@@ -537,7 +537,7 @@ if(PYTHONINTERP_FOUND)
 
     endif()
 
-    add_test(NAME LivelinessAssertion
+    proxy_add_test(NAME LivelinessAssertion
         COMMAND ${CMAKE_COMMAND} -DACTUAL_TEST="${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/liveliness_assertion.py" -P ${PROJECT_SOURCE_DIR}/cmake/common/test_wrapper.cmake)
 
     # Set test with label NoMemoryCheck
@@ -552,7 +552,8 @@ if(PYTHONINTERP_FOUND)
         set_property(TEST LivelinessAssertion APPEND PROPERTY ENVIRONMENT
             "PATH=$<TARGET_FILE_DIR:${PROJECT_NAME}>\\;$<TARGET_FILE_DIR:fastcdr>\\;${WIN_PATH}")
     endif()
-    add_test(NAME AutomaticLivelinessAssertion
+
+    proxy_add_test(NAME AutomaticLivelinessAssertion
         COMMAND ${CMAKE_COMMAND} -DACTUAL_TEST="${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/automatic_liveliness_assertion.py" -P ${PROJECT_SOURCE_DIR}/cmake/common/test_wrapper.cmake)
 
     # Set test with label NoMemoryCheck
@@ -568,7 +569,7 @@ if(PYTHONINTERP_FOUND)
             "PATH=$<TARGET_FILE_DIR:${PROJECT_NAME}>\\;$<TARGET_FILE_DIR:fastcdr>\\;${WIN_PATH}")
     endif()
 
-    add_test(NAME TwoPublishersCommunicationBestEffort
+    proxy_add_test(NAME TwoPublishersCommunicationBestEffort
         COMMAND ${CMAKE_COMMAND} -DACTUAL_TEST="${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/two_publishers_communication.py" -P ${PROJECT_SOURCE_DIR}/cmake/common/test_wrapper.cmake)
 
     # Set test with label NoMemoryCheck
@@ -586,7 +587,7 @@ if(PYTHONINTERP_FOUND)
             "PATH=$<TARGET_FILE_DIR:${PROJECT_NAME}>\\;$<TARGET_FILE_DIR:fastcdr>\\;${WIN_PATH}")
     endif()
 
-    add_test(NAME TwoPublishersCommunicationReliable
+    proxy_add_test(NAME TwoPublishersCommunicationReliable
         COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/two_publishers_communication.py)
 
     # Set test with label NoMemoryCheck
@@ -604,7 +605,7 @@ if(PYTHONINTERP_FOUND)
             "PATH=$<TARGET_FILE_DIR:${PROJECT_NAME}>\\;$<TARGET_FILE_DIR:fastcdr>\\;${WIN_PATH}")
     endif()
 
-    add_test(NAME SimpleCommunicationBestEffortFixed
+    proxy_add_test(NAME SimpleCommunicationBestEffortFixed
         COMMAND ${CMAKE_COMMAND} -DACTUAL_TEST="${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/simple_communication.py" -P ${PROJECT_SOURCE_DIR}/cmake/common/test_wrapper.cmake)
 
     # Set test with label NoMemoryCheck
@@ -626,7 +627,7 @@ if(PYTHONINTERP_FOUND)
             "PATH=$<TARGET_FILE_DIR:${PROJECT_NAME}>\\;$<TARGET_FILE_DIR:fastcdr>\\;${WIN_PATH}")
     endif()
 
-    add_test(NAME SHMCommunicationSubscriberDiesWhileProcessingMessage
+    proxy_add_test(NAME SHMCommunicationSubscriberDiesWhileProcessingMessage
         COMMAND ${CMAKE_COMMAND} -DACTUAL_TEST="${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/shm_communication_subscriber_dies_while_processing_message.py" -P ${PROJECT_SOURCE_DIR}/cmake/common/test_wrapper.cmake)
 
     # Set test with label NoMemoryCheck

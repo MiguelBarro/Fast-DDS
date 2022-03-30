@@ -43,7 +43,7 @@ if(NOT ((MSVC OR MSVC_IDE) AND EPROSIMA_INSTALLER) AND fastcdr_FOUND)
     endif()
 
     if(PYTHONINTERP_FOUND AND NOT APPLE AND NOT WIN32)
-        add_test(NAME AddDiscoveryServerToListFromEnvironmentFile
+        proxy_add_test(NAME AddDiscoveryServerToListFromEnvironmentFile
             COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/client_server_dynamic_discovery.py)
 
         set_property(TEST AddDiscoveryServerToListFromEnvironmentFile APPEND PROPERTY ENVIRONMENT

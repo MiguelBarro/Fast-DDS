@@ -133,7 +133,7 @@ if(PYTHONINTERP_FOUND)
         endif()
 
         # Add the test
-        add_test(
+        proxy_add_test(
             NAME performance.throughput.${throughput_test_name}
             COMMAND ${PYTHON_EXECUTABLE}
             ${CMAKE_CURRENT_SOURCE_DIR}/throughput_tests.py
@@ -169,7 +169,7 @@ if(PYTHONINTERP_FOUND)
             # Add the secure version
             list(APPEND test_cases_setup performance.throughput.${throughput_test_name}.security)
 
-            add_test(
+            proxy_add_test(
                 NAME performance.throughput.${throughput_test_name}.security
                 COMMAND ${PYTHON_EXECUTABLE}
                 ${CMAKE_CURRENT_SOURCE_DIR}/throughput_tests.py
@@ -195,7 +195,7 @@ if(PYTHONINTERP_FOUND)
             # append to the list of cases
             list(APPEND test_cases_setup performance.throughput.${throughput_test_name}.data_sharing)
 
-            add_test(
+            proxy_add_test(
                 NAME performance.throughput.${throughput_test_name}.data_sharing
                 COMMAND ${PYTHON_EXECUTABLE}
                 ${CMAKE_CURRENT_SOURCE_DIR}/throughput_tests.py
@@ -215,7 +215,7 @@ if(PYTHONINTERP_FOUND)
             # append to the list of cases
             list(APPEND test_cases_setup performance.throughput.${throughput_test_name}.data_loans)
 
-            add_test(
+            proxy_add_test(
                 NAME performance.throughput.${throughput_test_name}.data_loans
                 COMMAND ${PYTHON_EXECUTABLE}
                 ${CMAKE_CURRENT_SOURCE_DIR}/throughput_tests.py
@@ -232,7 +232,7 @@ if(PYTHONINTERP_FOUND)
                 # Add the secure version
                 list(APPEND test_cases_setup performance.throughput.${throughput_test_name}.data_loans.security)
 
-                add_test(
+                proxy_add_test(
                     NAME performance.throughput.${throughput_test_name}.data_loans.security
                     COMMAND ${PYTHON_EXECUTABLE}
                     ${CMAKE_CURRENT_SOURCE_DIR}/throughput_tests.py
@@ -261,7 +261,7 @@ if(PYTHONINTERP_FOUND)
             # append to the list of cases
             list(APPEND test_cases_setup performance.throughput.${throughput_test_name}.data_loans_and_sharing)
 
-            add_test(
+            proxy_add_test(
                 NAME performance.throughput.${throughput_test_name}.data_loans_and_sharing
                 COMMAND ${PYTHON_EXECUTABLE}
                 ${CMAKE_CURRENT_SOURCE_DIR}/throughput_tests.py

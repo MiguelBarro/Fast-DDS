@@ -166,7 +166,7 @@ if(GST_FOUND)
             # Loop over the test names
             foreach(video_test_name ${VIDEO_TEST_LIST})
                 # Add the test
-                add_test(
+                proxy_add_test(
                     NAME performance.video.${video_test_name}
                     COMMAND ${PYTHON_EXECUTABLE}
                     ${CMAKE_CURRENT_SOURCE_DIR}/video_tests.py
@@ -207,7 +207,7 @@ if(GST_FOUND)
                 # If there is security, add a secure test as well
                 if(SECURITY)
                     # Add the secure verison
-                    add_test(
+                    proxy_add_test(
                         NAME performance.video.${video_test_name}_security
                         COMMAND ${PYTHON_EXECUTABLE}
                         ${CMAKE_CURRENT_SOURCE_DIR}/video_tests.py

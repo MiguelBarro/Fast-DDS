@@ -54,7 +54,7 @@ if(PYTHONINTERP_FOUND)
     ###############################################################################
     # MemoryTest
     ###############################################################################
-    add_test(NAME MemoryTest
+    proxy_add_test(NAME MemoryTest
         COMMAND ${PYTHON_EXECUTABLE} memory_tests.py)
 
     # Set test with label NoMemoryCheck
@@ -76,7 +76,7 @@ if(PYTHONINTERP_FOUND)
     ###############################################################################
     # CyclesTest
     ###############################################################################
-    add_test(NAME CyclesTest
+    proxy_add_test(NAME CyclesTest
         COMMAND ${PYTHON_EXECUTABLE} cycles_tests.py)
 
     # Set test with label NoMemoryCheck
