@@ -1,0 +1,15 @@
+name: Github actions testing 
+on:
+  pull_request:
+    branches:
+      - 'test/actions'
+
+jobs:
+  ubuntu-sanitizer-run:
+    name: Sanitizer Evaluation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check context
+        run: >
+          echo ${{ github.head_ref }}
