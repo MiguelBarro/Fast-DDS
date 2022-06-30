@@ -14,30 +14,64 @@
 
 include_guard(DIRECTORY)
 
-if(TSAN_PERFILE_LOG)
+if(SAN_PERFILE_LOG)
 
-    set(TSAN_OPTIONS "TSAN_OPTIONS=")
-
-    # check if TSAN_OPTIONS are specified to keep it's contents
-    if(DEFINED ENV{TSAN_OPTIONS}) 
-        string(APPEND TSAN_OPTIONS "$ENV{TSAN_OPTIONS}")
-    endif()
+    # Semicolon separated list of sanitizer environment variables
+    set(SAN_OPTIONS "")
 
     # Get a config timestamp (all builds of the same config override each other)
     if(WIN32)
-        execute_process(COMMAND powershell -C Get-Date -Format "MMMM-dd-yyyy_HH-mm-ss" OUTPUT_VARIABLE TSAN_TIMESTAMP)
+        execute_process(COMMAND powershell -C Get-Date -Format "MMMM-dd-yyyy_HH-mm-ss" OUTPUT_VARIABLE SAN_TIMESTAMP)
     elseif(UNIX)
-        execute_process(COMMAND $ENV{SHELL} -c "LC_ALL=en_US.utf8 date +%B-%d-%Y_%H-%M-%S" OUTPUT_VARIABLE TSAN_TIMESTAMP)
+        execute_process(COMMAND $ENV{SHELL} -c "LC_ALL=en_US.utf8 date +%B-%d-%Y_%H-%M-%S" OUTPUT_VARIABLE SAN_TIMESTAMP)
     else()
-        string(TIMESTAMP TSAN_TIMESTAMP %B-%d-%Y_%H-%M-%S)
+        string(TIMESTAMP SAN_TIMESTAMP %B-%d-%Y_%H-%M-%S)
     endif()
 
     # get rid of line endings
-    string(REGEX REPLACE "\r|\n" "" TSAN_TIMESTAMP "${TSAN_TIMESTAMP}")
+    string(REGEX REPLACE "\r|\n" "" SAN_TIMESTAMP "${SAN_TIMESTAMP}")
 
-    # Get a log dir
-    set(TSAN_LOG_DIR "${PROJECT_BINARY_DIR}/${TSAN_TIMESTAMP}")
-    file(MAKE_DIRECTORY ${TSAN_LOG_DIR})
+    # Address sanitizer
+    if(SANITIZE_ADDRESS)
+        set(ASAN_OPTIONS "ASAN_OPTIONS=")
+
+        # check if TSAN_OPTIONS are specified to keep it's contents
+        if(DEFINED ENV{ASAN_OPTIONS})
+            string(APPEND ASAN_OPTIONS "$ENV{ASAN_OPTIONS}")
+        endif()
+
+        # Get a log dir
+        set(ASAN_LOG_DIR "${PROJECT_BINARY_DIR}/${SAN_TIMESTAMP}/asan")
+        file(MAKE_DIRECTORY ${ASAN_LOG_DIR})
+
+        # Populate environment variables
+        list(APPEND SAN_OPTIONS "${ASAN_OPTIONS} log_path=${ASAN_LOG_DIR}/<PROXY_NAME>")
+
+        unset(ASAN_OPTIONS)
+        unset(ASAN_LOG_DIR)
+    endif(SANITIZE_ADDRESS)
+
+    # Thread sanitizer
+    if(SANITIZE_THREAD)
+        set(TSAN_OPTIONS "TSAN_OPTIONS=")
+
+        # check if TSAN_OPTIONS are specified to keep it's contents
+        if(DEFINED ENV{TSAN_OPTIONS})
+            string(APPEND TSAN_OPTIONS "$ENV{TSAN_OPTIONS}")
+        endif()
+
+        # Get a log dir
+        set(TSAN_LOG_DIR "${PROJECT_BINARY_DIR}/${SAN_TIMESTAMP}/tsan")
+        file(MAKE_DIRECTORY ${TSAN_LOG_DIR})
+
+        # Populate environment variables
+        list(APPEND SAN_OPTIONS "${TSAN_OPTIONS} log_path=${TSAN_LOG_DIR}/<PROXY_NAME>")
+
+        unset(TSAN_OPTIONS)
+        unset(TSAN_LOG_DIR)
+    endif(SANITIZE_THREAD)
+
+    set(SAN_OPTIONS "${SAN_OPTIONS}" CACHE INTERNAL "sanitizer log template")
 
     # Modify the properties in a proxy function
     function(proxy_add_test)
@@ -45,21 +79,21 @@ if(TSAN_PERFILE_LOG)
         # perfect forwarding
         add_test(${ARGV})
 
-        # Get the test name 
+        # Get the test name
         cmake_parse_arguments(PROXY "" NAME "" ${ARGV})
 
         if(PROXY_NAME)
-            set_tests_properties(${PROXY_NAME} PROPERTIES ENVIRONMENT "${TSAN_OPTIONS} log_path=${TSAN_LOG_DIR}/${PROXY_NAME}")
+            string(REPLACE "<PROXY_NAME>" "${PROXY_NAME}" THIS_TEST_SAN_OPTIONS "${SAN_OPTIONS}")
+            set_tests_properties(${PROXY_NAME} PROPERTIES ENVIRONMENT "${THIS_TEST_SAN_OPTIONS}")
+            unset(THIS_TEST_SAN_OPTIONS)
         else()
             message(FATAL_ERROR "proxy_add_test cannot detect the test name")
         endif()
 
     endfunction()
 
-    unset(TSAN_TIMESTAMP)
-    # The following variables are used within the proxy function and cannot be removed yet
-    # unset(TSAN_LOG_DIR) 
-    # unset(TSAN_OPTIONS)
+    unset(SAN_TIMESTAMP)
+    unset(SAN_OPTIONS)
 else()
     # perfect forwarding
     function(proxy_add_test)

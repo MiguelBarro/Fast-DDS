@@ -385,6 +385,7 @@ option(FASTDDS_STATISTICS "Enable Fast DDS Statistics Module" ON)
 ###############################################################################
 # Include sanitizer framework if available
 ###############################################################################
+enable_language(CXX)
 find_package(Sanitizers)
 
 ###############################################################################
@@ -402,7 +403,7 @@ add_subdirectory(thirdparty/optionparser)
 ###############################################################################
 # When using thread sanitizer use per-test log file
 
-cmake_dependent_option(TSAN_PERFILE_LOG "Use specific log files for each test TSan output" ON "Sanitizers_FOUND" OFF)
+cmake_dependent_option(SAN_PERFILE_LOG "Use specific log files for each test TSan output" ON "Sanitizers_FOUND" OFF)
 include (./cmake/common/testproxy.cmake)
 
 enable_testing()
