@@ -31,21 +31,30 @@ if(SAN_PERFILE_LOG)
     # get rid of line endings
     string(REGEX REPLACE "\r|\n" "" SAN_TIMESTAMP "${SAN_TIMESTAMP}")
 
+    set(SAN_REPORT_ROOT ${PROJECT_BINARY_DIR})
+
+    # windows paths use : for drive units which can be misunderstood as unix list separator
+    # turn the path into UNC one 
+    if(WIN32)
+        string(REPLACE ":" "$" SAN_REPORT_ROOT "${SAN_REPORT_ROOT}")
+        set(SAN_REPORT_ROOT "//$ENV{COMPUTERNAME}/${SAN_REPORT_ROOT}")
+    endif()
+
     # Address sanitizer
     if(SANITIZE_ADDRESS)
         set(ASAN_OPTIONS "ASAN_OPTIONS=")
 
         # check if TSAN_OPTIONS are specified to keep it's contents
         if(DEFINED ENV{ASAN_OPTIONS})
-            string(APPEND ASAN_OPTIONS "$ENV{ASAN_OPTIONS}")
+            string(APPEND ASAN_OPTIONS "$ENV{ASAN_OPTIONS}:")
         endif()
 
         # Get a log dir
-        set(ASAN_LOG_DIR "${PROJECT_BINARY_DIR}/${SAN_TIMESTAMP}/asan")
+        set(ASAN_LOG_DIR "${SAN_REPORT_ROOT}/${SAN_TIMESTAMP}/asan")
         file(MAKE_DIRECTORY ${ASAN_LOG_DIR})
 
         # Populate environment variables
-        list(APPEND SAN_OPTIONS "${ASAN_OPTIONS} log_path=${ASAN_LOG_DIR}/<PROXY_NAME>")
+        list(APPEND SAN_OPTIONS "${ASAN_OPTIONS}log_path=${ASAN_LOG_DIR}/<PROXY_NAME>")
 
         unset(ASAN_OPTIONS)
         unset(ASAN_LOG_DIR)
@@ -57,15 +66,15 @@ if(SAN_PERFILE_LOG)
 
         # check if TSAN_OPTIONS are specified to keep it's contents
         if(DEFINED ENV{TSAN_OPTIONS})
-            string(APPEND TSAN_OPTIONS "$ENV{TSAN_OPTIONS}")
+            string(APPEND TSAN_OPTIONS "$ENV{TSAN_OPTIONS}:")
         endif()
 
         # Get a log dir
-        set(TSAN_LOG_DIR "${PROJECT_BINARY_DIR}/${SAN_TIMESTAMP}/tsan")
+        set(TSAN_LOG_DIR "${SAN_REPORT_ROOT}/${SAN_TIMESTAMP}/tsan")
         file(MAKE_DIRECTORY ${TSAN_LOG_DIR})
 
         # Populate environment variables
-        list(APPEND SAN_OPTIONS "${TSAN_OPTIONS} log_path=${TSAN_LOG_DIR}/<PROXY_NAME>")
+        list(APPEND SAN_OPTIONS "${TSAN_OPTIONS}log_path=${TSAN_LOG_DIR}/<PROXY_NAME>")
 
         unset(TSAN_OPTIONS)
         unset(TSAN_LOG_DIR)
@@ -92,6 +101,7 @@ if(SAN_PERFILE_LOG)
 
     endfunction()
 
+    unset(SAN_REPORT_ROOT)
     unset(SAN_TIMESTAMP)
     unset(SAN_OPTIONS)
 else()
