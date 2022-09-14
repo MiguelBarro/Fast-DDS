@@ -162,7 +162,7 @@ endif()
 ###############################################################################
 if(PYTHONINTERP_FOUND)
     # Dynamic types test
-    proxy_add_test(NAME DDSSimpleCommunicationTypeDiscovery
+    add_test(NAME DDSSimpleCommunicationTypeDiscovery
         COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/simple_communication_dynamic.py)
 
     # Set test with label NoMemoryCheck
@@ -183,7 +183,7 @@ if(PYTHONINTERP_FOUND)
 
     foreach(TEST_DEFINITION IN LISTS TEST_DEFINITIONS)
         set(TEST_NAME DDSCommunication_${TEST_DEFINITION})
-        proxy_add_test(
+        add_test(
             NAME ${TEST_NAME}
             COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/${TEST_BUILDER}
             ${TEST_DEFINITION}.json

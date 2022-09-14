@@ -58,7 +58,7 @@ macro(add_blackbox_gtest)
                 string(REGEX REPLACE ["\) \(,"] ";" GTEST_TEST_NAME ${GTEST_TEST_NAME})
                 list(GET GTEST_TEST_NAME 1 GTEST_GROUP_NAME)
                 list(GET GTEST_TEST_NAME 3 GTEST_TEST_NAME)
-                proxy_add_test(NAME ${test}.${GTEST_GROUP_NAME}.${GTEST_TEST_NAME}
+                add_test(NAME ${test}.${GTEST_GROUP_NAME}.${GTEST_TEST_NAME}
                     COMMAND ${command} --gtest_filter=${GTEST_GROUP_NAME}.${GTEST_TEST_NAME})
 
                 # decide if disable
@@ -91,7 +91,7 @@ macro(add_blackbox_gtest)
                 list(GET GTEST_TEST_NAME 1 GTEST_GROUP_NAME)
                 list(GET GTEST_TEST_NAME 3 GTEST_TEST_NAME)
 
-                proxy_add_test(NAME ${test}.${GTEST_GROUP_NAME}.${GTEST_TEST_NAME}.Transport
+                add_test(NAME ${test}.${GTEST_GROUP_NAME}.${GTEST_TEST_NAME}.Transport
                     COMMAND ${command} --gtest_filter=*/${GTEST_GROUP_NAME}.${GTEST_TEST_NAME}/Transport*)
 
                 # decide if disable
@@ -117,7 +117,7 @@ macro(add_blackbox_gtest)
                     LABELS "${GTEST_LABELS}"
                     DISABLED $<BOOL:${GTEST_USER_DISABLED}>)
 
-                proxy_add_test(NAME ${test}.${GTEST_GROUP_NAME}.${GTEST_TEST_NAME}.Intraprocess
+                add_test(NAME ${test}.${GTEST_GROUP_NAME}.${GTEST_TEST_NAME}.Intraprocess
                     COMMAND ${command} --gtest_filter=*/${GTEST_GROUP_NAME}.${GTEST_TEST_NAME}/Intraprocess*)
 
                 # Add environment
@@ -135,7 +135,7 @@ macro(add_blackbox_gtest)
                     DISABLED $<BOOL:${GTEST_USER_DISABLED}>)
 
                 if(${test} MATCHES ".*_DDS_PIM$")
-                    proxy_add_test(NAME ${test}.${GTEST_GROUP_NAME}.${GTEST_TEST_NAME}.Datasharing
+                    add_test(NAME ${test}.${GTEST_GROUP_NAME}.${GTEST_TEST_NAME}.Datasharing
                         COMMAND ${command} --gtest_filter=*/${GTEST_GROUP_NAME}.${GTEST_TEST_NAME}/Datasharing*)
 
                     # Add environment
@@ -163,7 +163,7 @@ macro(add_blackbox_gtest)
             set(gtest_filter "--gtest_filter=${GTEST_IGNORE}")
         endif()
 
-        proxy_add_test(NAME ${test} COMMAND ${command} ${gtest_filter})
+        add_test(NAME ${test} COMMAND ${command} ${gtest_filter})
 
         # Add environment
         if(WIN32)

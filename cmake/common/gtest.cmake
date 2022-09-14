@@ -67,7 +67,7 @@ macro(add_gtest)
                 string(REGEX REPLACE ["\) \(,"] ";" GTEST_TEST_NAME ${GTEST_TEST_NAME})
                 list(GET GTEST_TEST_NAME 1 GTEST_GROUP_NAME)
                 list(GET GTEST_TEST_NAME 3 GTEST_TEST_NAME)
-                proxy_add_test(NAME ${GTEST_GROUP_NAME}.${GTEST_TEST_NAME}
+                add_test(NAME ${GTEST_GROUP_NAME}.${GTEST_TEST_NAME}
                     COMMAND ${command}
                     --gtest_filter=${GTEST_GROUP_NAME}.${GTEST_TEST_NAME}:*/${GTEST_GROUP_NAME}.${GTEST_TEST_NAME}/*:${GTEST_GROUP_NAME}/*.${GTEST_TEST_NAME})
 

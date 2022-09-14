@@ -16,6 +16,9 @@ option(PERFORMANCE_TESTS "Activate the building and execution of performance tes
 option(SYSTEM_TESTS "Activate the building and execution of system tests" OFF)
 option(PROFILING_TESTS "Activate the building and execution of profiling tests" OFF)
 option(EPROSIMA_BUILD_TESTS "Activate the building and execution unit tests and integral tests" OFF)
+cmake_dependent_option(SAN_PERFILE_LOG "Use specific log files for each test TSan output" ON "Sanitizers_FOUND" OFF)
+
+include(testproxy)
 
 if(EPROSIMA_BUILD)
     set(EPROSIMA_BUILD_TESTS ON)

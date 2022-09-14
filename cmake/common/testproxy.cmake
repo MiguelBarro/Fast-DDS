@@ -83,10 +83,11 @@ if(SAN_PERFILE_LOG)
     set(SAN_OPTIONS "${SAN_OPTIONS}" CACHE INTERNAL "sanitizer log template")
 
     # Modify the properties in a proxy function
-    function(proxy_add_test)
+    function(add_test)
 
         # perfect forwarding
-        add_test(${ARGV})
+        # this is an undocumented trick to avoid namespace collision see https://gitlab.kitware.com/cmake/cmake/-/issues/23482
+        _add_test(${ARGV})
 
         # Get the test name
         cmake_parse_arguments(PROXY "" NAME "" ${ARGV})
@@ -96,7 +97,7 @@ if(SAN_PERFILE_LOG)
             set_tests_properties(${PROXY_NAME} PROPERTIES ENVIRONMENT "${THIS_TEST_SAN_OPTIONS}")
             unset(THIS_TEST_SAN_OPTIONS)
         else()
-            message(FATAL_ERROR "proxy_add_test cannot detect the test name")
+            message(FATAL_ERROR "sanitizer proxy add_test() cannot detect the test name")
         endif()
 
     endfunction()
@@ -104,11 +105,6 @@ if(SAN_PERFILE_LOG)
     unset(SAN_REPORT_ROOT)
     unset(SAN_TIMESTAMP)
     unset(SAN_OPTIONS)
-else()
-    # perfect forwarding
-    function(proxy_add_test)
-        add_test(${ARGV})
-    endfunction()
 endif()
 
 # Function to traverse all subdirs and get all tests

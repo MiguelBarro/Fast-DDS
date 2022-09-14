@@ -212,7 +212,8 @@ endif()
 ###############################################################################
 # Load CMake modules
 ###############################################################################
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake/modules)
+list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/modules)
+list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/common)
 
 ###############################################################################
 # Default shared libraries
@@ -402,9 +403,6 @@ add_subdirectory(thirdparty/optionparser)
 # Testing options
 ###############################################################################
 # When using thread sanitizer use per-test log file
-
-cmake_dependent_option(SAN_PERFILE_LOG "Use specific log files for each test TSan output" ON "Sanitizers_FOUND" OFF)
-include (./cmake/common/testproxy.cmake)
 
 enable_testing()
 include(CTest)

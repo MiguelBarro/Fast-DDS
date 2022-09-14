@@ -94,7 +94,7 @@ if(PYTHONINTERP_FOUND)
         # CTest has issues with signals on windows. We forked the test
         # execution using an auxiliary powershell script
         if(WIN32)
-           proxy_add_test(
+           add_test(
                     NAME system.tools.fastdds.${TEST}
                     COMMAND powershell "-File" ${PWS_LAUNCHER}
                             ${PYTHON_EXECUTABLE}
@@ -103,7 +103,7 @@ if(PYTHONINTERP_FOUND)
                             ${TEST}
                 )
         else()
-            proxy_add_test(
+            add_test(
                     NAME system.tools.fastdds.${TEST}
                     COMMAND ${PYTHON_EXECUTABLE}
                             ${CMAKE_CURRENT_SOURCE_DIR}/tests.py
