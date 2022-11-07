@@ -245,9 +245,9 @@ target_include_directories(UDPv4Tests PRIVATE
     ${PROJECT_SOURCE_DIR}/src/cpp
     $<$<BOOL:${ANDROID}>:${ANDROID_IFADDRS_INCLUDE_DIR}>
     )
-target_link_libraries(UDPv4Tests GTest::gtest ${MOCKS})
+target_link_libraries(UDPv4Tests GTest::gtest ${MOCKS} $<TARGET_NAME_IF_EXISTS:fastdds::wer>)
 if(MSVC OR MSVC_IDE)
-    target_link_libraries(UDPv4Tests ${PRIVACY} iphlpapi Shlwapi )
+    target_link_libraries(UDPv4Tests ${PRIVACY} iphlpapi Shlwapi)
 endif()
 add_gtest(UDPv4Tests SOURCES ${UDPV4TESTS_SOURCE})
 set(TRANSPORT_XFAIL_LIST XFAIL_UDP4)
@@ -269,9 +269,9 @@ if(NOT DISABLE_UDPV6_TESTS)
         ${PROJECT_SOURCE_DIR}/include ${PROJECT_BINARY_DIR}/include
         ${PROJECT_SOURCE_DIR}/src/cpp
         )
-    target_link_libraries(UDPv6Tests GTest::gtest ${MOCKS})
+    target_link_libraries(UDPv6Tests GTest::gtest ${MOCKS} $<TARGET_NAME_IF_EXISTS:fastdds::wer>)
     if(MSVC OR MSVC_IDE)
-        target_link_libraries(UDPv6Tests ${PRIVACY} iphlpapi Shlwapi )
+        target_link_libraries(UDPv6Tests ${PRIVACY} iphlpapi Shlwapi)
     endif()
     add_gtest(UDPv6Tests SOURCES ${UDPV6TESTS_SOURCE})
     set(TRANSPORT_XFAIL_LIST ${TRANSPORT_XFAIL_LIST} XFAIL_UDP6)
@@ -294,6 +294,7 @@ if(NOT DISABLE_UDPV6_TESTS)
         $<$<BOOL:${ANDROID}>:${ANDROID_IFADDRS_INCLUDE_DIR}>
         )
     target_link_libraries(TCPv6Tests GTest::gtest ${MOCKS}
+        $<TARGET_NAME_IF_EXISTS:fastdds::wer>
         $<$<BOOL:${TLS_FOUND}>:OpenSSL::SSL$<SEMICOLON>OpenSSL::Crypto>)
     if(MSVC OR MSVC_IDE)
         target_link_libraries(TCPv6Tests ${PRIVACY} fastcdr iphlpapi Shlwapi)
@@ -321,11 +322,9 @@ target_include_directories(test_UDPv4Tests PRIVATE
     ${PROJECT_SOURCE_DIR}/src/cpp
     $<$<BOOL:${ANDROID}>:${ANDROID_IFADDRS_INCLUDE_DIR}>
     )
-target_link_libraries(test_UDPv4Tests GTest::gtest ${MOCKS})
+target_link_libraries(test_UDPv4Tests GTest::gtest ${MOCKS} $<TARGET_NAME_IF_EXISTS:fastdds::wer>)
 if(MSVC OR MSVC_IDE)
     target_link_libraries(test_UDPv4Tests ${PRIVACY} iphlpapi Shlwapi)
-else()
-    target_link_libraries(test_UDPv4Tests ${PRIVACY})
 endif()
 add_gtest(test_UDPv4Tests SOURCES ${TEST_UDPV4TESTS_SOURCE})
 set(TRANSPORT_XFAIL_LIST ${TRANSPORT_XFAIL_LIST} XFAIL_TEST_UDP4)
@@ -348,6 +347,7 @@ target_include_directories(TCPv4Tests PRIVATE
     $<$<BOOL:${ANDROID}>:${ANDROID_IFADDRS_INCLUDE_DIR}>
     )
 target_link_libraries(TCPv4Tests GTest::gtest ${MOCKS}
+    $<TARGET_NAME_IF_EXISTS:fastdds::wer>
     $<$<BOOL:${TLS_FOUND}>:OpenSSL::SSL$<SEMICOLON>OpenSSL::Crypto>)
 if(MSVC OR MSVC_IDE)
     target_link_libraries(TCPv4Tests ${PRIVACY} fastcdr iphlpapi Shlwapi)
@@ -381,11 +381,10 @@ if(IS_THIRDPARTY_BOOST_OK)
         $<$<BOOL:${TLS_FOUND}>:OpenSSL::SSL$<SEMICOLON>OpenSSL::Crypto>
         ${THIRDPARTY_BOOST_LINK_LIBS}
         eProsima_atomic
+        $<TARGET_NAME_IF_EXISTS:fastdds::wer>
         )
     if(MSVC OR MSVC_IDE)
-        target_link_libraries(SharedMemTests ${PRIVACY} iphlpapi Shlwapi )
-    else()
-        target_link_libraries(SharedMemTests ${PRIVACY} )
+        target_link_libraries(SharedMemTests ${PRIVACY} iphlpapi Shlwapi)
     endif()
     add_gtest(SharedMemTests SOURCES ${SHAREDMEMTESTS_SOURCE})
     set(TRANSPORT_XFAIL_LIST ${TRANSPORT_XFAIL_LIST} XFAIL_SHM)

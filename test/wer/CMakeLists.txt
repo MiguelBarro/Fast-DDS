@@ -40,7 +40,7 @@ add_library(fastdds::wer ALIAS wer)
 target_include_directories(wer INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 
 # If the dependent test doesn't use gtest this is harmless
-target_link_libraries(wer INTERFACE GTest::gtest)
+target_link_libraries(wer INTERFACE GTest::gtest $<TARGET_NAME_IF_EXISTS:fastdds::wer>)
 
 # Specify the timeout time in seconds
 target_compile_definitions(wer INTERFACE WER_ENABLED WER_TIMEOUT_TIME=${WER_TIMEOUT_TIME})

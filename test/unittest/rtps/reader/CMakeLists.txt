@@ -47,6 +47,7 @@ target_include_directories(WriterProxyTests PRIVATE
     ${PROJECT_SOURCE_DIR}/src/cpp
     )
 target_link_libraries(WriterProxyTests foonathan_memory
+    $<TARGET_NAME_IF_EXISTS:fastdds::wer>
     GTest::gmock
     ${CMAKE_DL_LIBS})
 add_gtest(WriterProxyTests SOURCES ${WRITERPROXYTESTS_SOURCE})
