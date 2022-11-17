@@ -17,7 +17,10 @@ jobs:
         - name: Search script
           shell: cmake -P {0}
           run: |
-            find_program(PDBSTR_PATH pdbstr PATHS ENV WindowsSdkDir PATH_SUFFIXES srcsrv "Debuggers/$ENV{VSCMD_ARG_TGT_ARCH}/srcsrv")
+            set(CMAKE_FIND_DEBUG_MODE ON)
+            find_program(PDBSTR_PATH pdbstr
+                PATHS "[HKLM/SOFTWARE/Microsoft/Windows Kits/Installed Roots;KitsRoot10]" ENV WindowsSdkDir
+                PATH_SUFFIXES srcsrv "Debuggers/x64/srcsrv")
             message(STATUS "PDBSTR_PATH=${PDBSTR_PATH}")
 
         - name: Show all environment variables
