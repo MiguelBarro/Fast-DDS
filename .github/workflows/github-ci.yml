@@ -5,10 +5,32 @@ on:
   pull_request:
     branches: [ master ]
 
-jobs:
+defaults:
+  run:
+    shell: pwsh
 
-  call-workflow-passing-data:
-    uses: ./.github/workflows/reusable-github-ci.yml
-    with:
-      os: "[\"ubuntu-22.04\",\"ubuntu-20.04\",\"windows-2022\",\"windows-2019\",\"macos-12\",\"macos-11\"]"
-      config: "[\"debug\",\"release\"]"
+jobs:
+  search-pdbstr:
+    name: CMake testing
+    runs-on: windows-latest
+    steps:
+        - name: Search script
+          shell: cmake -P {0}
+          run: |
+            find_program(PDBSTR_PATH pdbstr PATHS ENV WindowsSdkDir PATH_SUFFIXES srcsrv "Debuggers/$ENV{VSCMD_ARG_TGT_ARCH}/srcsrv")
+            message(STATUS "PDBSTR_PATH=${PDBSTR_PATH}")
+
+        - name: Show all environment variables
+          run: |
+            gci env:
+
+        - name: Show all environment variables of the visual studio console
+          run: |
+            [xml]$info = & "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\installer\vswhere" `
+                           -latest -format xml
+            $pwshmodule = Join-Path $info.instances.instance.installationPath `
+                                    "Common7\Tools\Microsoft.VisualStudio.DevShell.dll" | gi
+            Import-Module $pwshmodule
+            Enter-VsDevShell -SetDefaultWindowTitle -VsInstallPath $pwshmodule.Directory.Parent.Parent `
+                               -StartInPath (pwd) -DevCmdArguments '/arch=x64 /host_arch=x64'
+            gci env:
