@@ -66,7 +66,7 @@ macro(add_xtypes_gtest test)
                 endforeach()
             endif()
             string(REPLACE ";" "\\;" WIN_PATH "${WIN_PATH}")
-            set_tests_properties(${test} PROPERTIES ENVIRONMENT "PATH=${WIN_PATH}")
+            set_property(TEST ${test} APPEND PROPERTY ENVIRONMENT "PATH=${WIN_PATH}")
         endif()
 
         foreach(property ${GTEST_ENVIRONMENTS})
