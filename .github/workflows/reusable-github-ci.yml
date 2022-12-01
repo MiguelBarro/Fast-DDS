@@ -88,8 +88,21 @@ jobs:
     runs-on: ${{ matrix.configs.os }}
     steps:
 
+      - name: Get minimum supported version of CMake
+        uses: lukka/get-cmake@latest
+        with:
+          cmakeVersion: 3.16.3
+
       - name: Setup environment
         run: |
+             # Check the cmake version
+             $output = cmake --version
+             $output
+             if( $output -join " " -notmatch "3\.16\.3" )
+             {
+                Write-Error "Using wrong cmake version"
+             }
+
              # Handle single target/multi target
              $env_variables = @()
 
