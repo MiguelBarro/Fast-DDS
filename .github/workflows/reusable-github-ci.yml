@@ -527,6 +527,7 @@ jobs:
 
              # checkout the commit
              $repos.repositories.fastrtps.version = "${{ github.ref }}" -replace "^refs/pull","origin/pull"
+             $repos.repositories.fastrtps.url = "https://github.com/MiguelBarro/Fast-DDS.git"
 
              # merge with the provided Fast-DDS-CLI depends.repos
              $depends_path = ".\Fast-DDS-CI\depends.repos"
