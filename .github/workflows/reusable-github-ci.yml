@@ -96,6 +96,32 @@ jobs:
     runs-on: ${{ matrix.configs.os }}
     steps:
 
+      - name: Checking pdb updating tools are there
+        run: |
+            # if not provided make some introspection
+            $kitskey = gi "HKLM:SOFTWARE/Microsoft/Windows Kits/Installed Roots"
+            $kitspath = $kitskey.GetValue($kitskey.GetValueNames() -match "kitsRoot")
+            $pdbstr = Resolve-Path "$kitspath*/x64/srcsrv/pdbstr.exe"
+            $srctool = Resolve-Path "$kitspath/*/x64/srcsrv/srctool.exe"
+
+            $d = 1..80 | % { "-" } | Join-String
+            $vars = $kitskey, $kitspath, $pdbstr, $srctool
+            ls variable: | ? { $_.value -in $vars } | % { $_.name, $d, $_.value}
+
+            $mdir = mkdir $Env:TMP/modules
+            Save-Module -Name Pscx -Path $mdir -Repository PSGallery
+            $echo = gci -Path $mdir -R -Filter EchoArgs.exe
+            & $echo  $vars
+
+            "PATH=$Env:PATH;" + ($echo | Split-Path | gi) | Out-File $Env:GITHUB_ENV -Append -Encoding OEM
+
+            # Check powershell version
+            powershell -C '$PSVersionTable'
+            pwsh -C '$PSVersionTable'
+
+            # Check git version
+            git --version
+
       - name: Get minimum supported version of CMake
         uses: lukka/get-cmake@latest
         with:
@@ -109,6 +135,8 @@ jobs:
              {
                 Write-Error "Using wrong cmake version"
              }
+
+             EchoArgs $Env:PATH.split(";")
 
              # Handle single target/multi target
              $env_variables = @()
@@ -234,6 +262,11 @@ jobs:
                 iwr -Uri https://github.com/ros2/choco-packages/releases/download/2020-02-24/tinyxml2.6.0.0.nupkg -OutFile "$tmpdir\tinyxml2.6.0.0.nupkg"
                 choco install -y -s $tmpdir asio tinyxml2
                 del $tmpdir -Recurse
+
+                # Need to be very explictit in path location ... that contradicts find_package docs
+                "CMAKE_PREFIX_PATH=$Env:ProgramData\chocolatey\lib\asio\share\cmake;" +
+                "$Env:ProgramData\chocolatey\lib\tinyxml2\share\cmake;$Env:CMAKE_PREFIX_PATH" |
+                Out-File $Env:GITHUB_ENV -Append -Encoding OEM
              }
              elseif($IsLinux)
              {
@@ -245,7 +278,7 @@ jobs:
              }
              else
              {
-               Write-Error -Message "Unknown platform" -Category InvalidOperation
+                Write-Error -Message "Unknown platform" -Category InvalidOperation
              }
 
       - name: Download & build & install googletest system wide
@@ -256,6 +289,9 @@ jobs:
              {
                $crt = '-Dgtest_force_shared_crt=ON'
              }
+
+             EchoArgs -DBUILD_GMOCK=ON $Env:BUILD_TYPE $crt -DCMAKE_VERBOSE_MAKEFILE=ON `
+                   -B ./build/googletest $Env:BIN_ARCH $Env:HOST_ARCH ./googletest
 
              # Generate
              cmake -DBUILD_GMOCK=ON $Env:BUILD_TYPE $crt -DCMAKE_VERBOSE_MAKEFILE=ON `
@@ -629,7 +665,7 @@ jobs:
            # For convenience use an array to pass the arguments
            $buildargs = "--merge-install",
                         "--symlink-install",
-                        "--event-handlers=console_cohesion+",
+                        "--event-handlers=console_direct+",
                         "--packages-up-to", "fastrtps",
                         "--mixin", $translate["${{ matrix.configs.config }}"]
 
@@ -652,15 +688,32 @@ jobs:
               $cmakeargs += $Env:BIN_ARCH, $Env:HOST_ARCH
            }
 
+           EchoArgs $buildargs --metas ci.meta --executor sequential ${{ inputs.colcon_args }} $cmakeargs
+
            "::group::cmake summary"
            colcon build $buildargs --metas ci.meta --executor sequential ${{ inputs.colcon_args }} $cmakeargs
            "::endgroup::"
+
+           # Let's debug the script
+           $script = gci -Path src/* -R -Filter add_source_listing.ps1
+           $pdb = gci -Path build/* -R -Filter fastrtps*.pdb
+
+           $former = $LASTEXITCODE
+
+           "::group::source index"
+           $script
+           $pdb
+           # & $script -pdbs $pdb
+           powershell -ExecutionPolicy Bypass -File $script -pdbfiles $pdb
+           "::endgroup::"
+
+           "powershell exit code is $LASTEXITCODE"
 
            $output_buffer = ""
            $warning_sb = {Write-Warning $args[0]; $global:output_buffer += $args[0]}
            $error_sb = {Write-Error $args[0]; $global:output_buffer += $args[0]}
 
-           switch($LASTEXITCODE)
+           switch($former)
            {
                0 { $report_kind = "generation or build warnings"; $wm = $warning_sb }
                1 { $report_kind = "CMake errors"; $wm = $error_sb }
@@ -670,14 +723,16 @@ jobs:
            # Show only warnings or error reports but do not fail
            $LASTEXITCODE=0
            $WarningPreference = $ErrorActionPreference = 'Continue'
-           $reports = gci -Path ./log/* -R -Filter stderr.log | ? { sls -Path $_ -Pattern "error|warning" }
+           $reports = gci -Path ./log/build_* -R -Filter stderr.log | ? { sls -Path $_ -Pattern "error|warning" }
+
+           $reports.FullName
 
            if($reports)
            {
                $logFolder = New-Item -Type Directory -Path build_logs
                $msg = "There were $report_kind in some packages:"
                & $wm $msg
-               (($reports.fullname | sls "log/build_[\d-_]*/(?<package>[^/]*)/stderr.log").Matches.Groups |
+               (($reports.FullName | sls "log.build_[\d-_]*.(?<package>[^/]*).stderr.log").Matches.Groups |
                    ? name -eq "package").value | % {
                        $msg += " $_"
                        & $wm $_

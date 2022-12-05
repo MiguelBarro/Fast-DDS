@@ -657,16 +657,25 @@ if(MSVC OR MSVC_IDE)
         # get the tools path
         get_filename_component(PDB_TOOLS_PATH "${PDBSTR_PATH}" DIRECTORY ABSOLUTE)
         # add post build event
-        add_custom_command(
-            TARGET ${PROJECT_NAME} POST_BUILD
-            COMMENT "Adding source indexing to pdb symbols"
-            COMMAND "$<IF:$<CONFIG:Debug,RelWithDebInfo>,powershell,exit>"
-                       -ExecutionPolicy Bypass
-                       -File "${CMAKE_SOURCE_DIR}/cmake/modules/add_source_listing.ps1"
-                       -pdbs "$<TARGET_PDB_FILE:${PROJECT_NAME}>"
-                       -toolsPath "${PDB_TOOLS_PATH}"
-            VERBATIM
-            )
+#        add_custom_command(
+#            TARGET ${PROJECT_NAME} POST_BUILD
+#            COMMENT "Adding source indexing to pdb symbols"
+#            COMMAND "$<IF:$<CONFIG:Debug,RelWithDebInfo>,powershell,exit>"
+#                       -ExecutionPolicy Bypass
+#                       -File "${CMAKE_SOURCE_DIR}/cmake/modules/add_source_listing.ps1"
+#                       -pdbs "$<TARGET_PDB_FILE:${PROJECT_NAME}>"
+#                       -toolsPath "${PDB_TOOLS_PATH}"
+#            COMMAND "$<IF:$<CONFIG:Debug,RelWithDebInfo>,${PDBSTR_PATH},exit>" -r
+#                    "-p:$<TARGET_PDB_FILE:${PROJECT_NAME}>"
+#                    "-i:prueba.txt"
+#                    "-s:srcsrv"
+#            COMMAND "$<IF:$<CONFIG:Debug,RelWithDebInfo>,powershell,exit>"
+#                      -Command Get-Content prueba.txt
+#            VERBATIM
+#            USES_TERMINAL
+#            )
+    else()
+        message(FATAL_ERROR "pdbstr NOT FOUND")
     endif()
 endif()
 
