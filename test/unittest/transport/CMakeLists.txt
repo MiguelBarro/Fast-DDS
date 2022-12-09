@@ -254,7 +254,8 @@ endif()
 add_gtest(UDPv4Tests SOURCES ${UDPV4TESTS_SOURCE})
 set(TRANSPORT_XFAIL_LIST XFAIL_UDP4)
 
-option(DISABLE_UDPV6_TESTS "Disable UDPv6 tests because fails in some systems" OFF)
+# option(DISABLE_UDPV6_TESTS "Disable UDPv6 tests because fails in some systems" OFF)
+option(DISABLE_UDPV6_TESTS "Disable UDPv6 tests because fails in some systems" ON)
 
 if(NOT DISABLE_UDPV6_TESTS)
     add_executable(UDPv6Tests ${UDPV6TESTS_SOURCE})

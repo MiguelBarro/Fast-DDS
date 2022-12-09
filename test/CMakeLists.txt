@@ -56,8 +56,8 @@ if(EPROSIMA_BUILD_TESTS)
         add_subdirectory(wer) # first because the others may depend on it
     endif()
 
-    add_subdirectory(blackbox)
-    add_subdirectory(communication)
+#    add_subdirectory(blackbox)
+#    add_subdirectory(communication)
     add_subdirectory(unittest)
     add_subdirectory(xtypes)
     add_subdirectory(dds/communication)
