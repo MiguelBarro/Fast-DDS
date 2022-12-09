@@ -116,19 +116,9 @@ jobs:
             rm $pdbstr64
             New-Item -ItemType SymbolicLink -Target $pdbstr86 -Path $pdbstr64
 
-      - name: Get minimum supported version of CMake
-        uses: lukka/get-cmake@latest
-        with:
-          cmakeVersion: ${{ matrix.configs.cmake_minimum_requirement }}
-
       - name: Setup environment
         run: |
-             # Check the cmake version
-             if( (cmake --version) -join " " -notmatch
-                 "${{ matrix.configs.cmake_minimum_requirement }}".replace(".","\.") )
-             {
-                Write-Error "Using wrong cmake version"
-             }
+             cmake --version
 
              # Introduce EchoArgs to check colcon/cmake calls
              $mdir = New-Item -Type Directory -Path (Join-Path ($Env:TMP ?? "/tmp") (New-GUID))
