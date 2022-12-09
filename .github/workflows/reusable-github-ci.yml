@@ -704,6 +704,14 @@ jobs:
            colcon build $buildargs --metas ci.meta --executor sequential ${{ inputs.colcon_args }} $cmakeargs.split(" ")
            "::endgroup::"
 
+           # Show the logs to provide some clues (if they are generated)
+           "colcon build exit code is $LASTEXITCODE"
+
+           gci -Path log/* -R -Filter *.log | % {
+               ">>>>>>>>>>>> $($_.FullName) <<<<<<<<<<<<"
+               Get-Content $_
+           }
+
            $output_buffer = ""
            $warning_sb = {Write-Warning $args[0]; $global:output_buffer += $args[0]}
            $error_sb = {Write-Error $args[0]; $global:output_buffer += $args[0]}
