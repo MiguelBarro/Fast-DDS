@@ -1,6 +1,7 @@
 name: Fast-DDS nightly continuous integration
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: '42 23 * * *'
 
